@@ -87,3 +87,7 @@ export const logout = (req,res) => {
     console.log(error);
   }
 }
+
+export const getOtherUsers = async (req,res) => {
+
+}
