@@ -25,13 +25,14 @@ export const sendMessage = async (req, res) => {
       gotConversation.messages.push(newMessage._id);
     }
 
+    await gotConversation.save();
     // Socket IO
 
     return res.status(201).json({
       message: "Message send successfully.",
     });
 
-    await gotConversation.save();
+    
   } catch (error) {
     console.log(error);
   }
