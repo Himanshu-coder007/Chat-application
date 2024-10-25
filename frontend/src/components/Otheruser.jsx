@@ -7,7 +7,8 @@ const Otheruser = ({ user }) => {
   const { selectedUser } = useSelector((store) => store.user);
 
   const selectedUserHandler = (user) => {
-    console.log(user);
+    
+    //store
     dispatch(setSelectedUser(user));
   };
   return (
