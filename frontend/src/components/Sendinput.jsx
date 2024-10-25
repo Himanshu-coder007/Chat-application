@@ -24,7 +24,7 @@ const Sendinput = () => {
     } catch (error) {
       console.log(error);
     }
-    
+    setMessage("");
   }
   return (
    <form onSubmit={onSubmitHandler} className='px-4 my-3'>
