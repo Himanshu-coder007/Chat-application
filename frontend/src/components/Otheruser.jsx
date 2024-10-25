@@ -16,8 +16,7 @@ const Otheruser = ({ user }) => {
       <div
         onClick={() => selectedUserHandler(user)}
         className={` ${
-          selectedUser?._id === user?._id ? "bg-zinc-200" : ""
-        } flex gap-2 items-center text-white hover:text-zinc-900 hover:bg-zinc-200 rounded-sm p-2 cursor-pointer`}
+          selectedUser?._id === user?._id ? 'bg-zinc-200 text-black' : 'text-white'} flex gap-2 hover:text-black items-center hover:bg-zinc-200 rounded p-2 cursor-pointer`}
       >
         <div className="avatar online">
           <div className="w-12 rounded-full">
@@ -26,7 +25,7 @@ const Otheruser = ({ user }) => {
         </div>
         <div className="flex flex-col flex-1">
           <div className="flex justify-between  gap-2 ">
-            <p className="text-black">{user?.fullName}</p>
+            <p>{user?.fullName}</p>
           </div>
         </div>
       </div>
