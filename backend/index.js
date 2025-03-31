@@ -16,7 +16,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 const corsOption = {
-  origin: "http://localhost:3000",
+   origin: [
+    "http://localhost:3000", // Your local React app
+    "https://chat-application-neon-eight.vercel.app" // Vercel URL
+  ],
   credentials: true,
 };
 app.use(cors(corsOption));
