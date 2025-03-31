@@ -6,53 +6,67 @@ import { setOtherUsers } from "../redux/userSlice";
 const useGetOtherUsers = () => {
   const dispatch = useDispatch();
 
-  // Function to get the token from cookies or localStorage
   const getToken = () => {
-    // Check for token in cookies
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("token="))
-      ?.split("=")[1];
-
-    // If not found in cookies, check localStorage
-    return token || localStorage.getItem("token");
+    try {
+      // More reliable cookie parsing
+      const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+      const tokenCookie = cookies.find(cookie => cookie.startsWith('token='));
+      
+      // Check both cookie formats
+      const token = tokenCookie?.split('=')[1] || localStorage.getItem('token');
+      
+      if (!token) {
+        console.log("Token not found in cookies or localStorage");
+        // Clear any invalid tokens
+        localStorage.removeItem('token');
+        document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        return null;
+      }
+      return token;
+    } catch (error) {
+      console.error("Error getting token:", error);
+      return null;
+    }
   };
 
   useEffect(() => {
     const fetchOtherUsers = async () => {
       try {
         const token = getToken();
-
-        // If no token, log and return early
+        
         if (!token) {
-          console.log("No token found, user not authenticated.");
+          console.log("No token found, redirecting to login");
+          window.location.href = '/login';
           return;
         }
 
-        // Ensure to pass the token in the headers
         const res = await axios.get(
-          `https://chat-application-6og6.onrender.com/api/v1/user`,
+          `${process.env.REACT_APP_API_URL}/api/v1/user`,
           {
             headers: {
-              Authorization: `Bearer ${token}`, // Include the token in headers
+              Authorization: `Bearer ${token}`,
             },
-            withCredentials: true, // Ensure credentials are sent with the request
+            withCredentials: true,
+            credentials: 'include'
           }
         );
 
-        console.log("other users -> ", res.data);
-
-        // Dispatch to store other users in Redux
         dispatch(setOtherUsers(res.data));
       } catch (error) {
-        console.error("Error fetching users:", error.response?.data || error);
+        console.error("Error fetching users:", error);
+        if (error.response?.status === 401) {
+          // Handle unauthorized (token expired/invalid)
+          localStorage.removeItem('token');
+          document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+          window.location.href = '/login';
+        }
       }
     };
 
     fetchOtherUsers();
-  }, [dispatch]); // Re-run the effect when the dispatch function changes
+  }, [dispatch]);
 
-  return null; // No need to return anything, just side effect
+  return null;
 };
 
 export default useGetOtherUsers;
