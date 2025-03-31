@@ -11,7 +11,7 @@ const useGetOtherUsers = () => {
         const fetchOtherUsers = async () => {
             try {
                 axios.defaults.withCredentials = true;
-                const res = await axios.get(`https://chat-application-neon-eight.vercel.app/api/v1/user`);
+                const res = await axios.get(`https://chat-application-6og6.onrender.com/api/v1/user/`);
                 // store
                 console.log("other users -> ",res);
                 dispatch(setOtherUsers(res.data));
