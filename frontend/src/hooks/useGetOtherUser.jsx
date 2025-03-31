@@ -12,7 +12,7 @@ const useGetOtherUsers = () => {
       try {
        
         const res = await axios.get(
-          `https://chat-application-6og6.onrender.com/api/v1/user/`,{withCredentials:true}
+          `https://chat-application-6og6.onrender.com/api/v1/user`,{withCredentials:true}
         );
         // store
         console.log("other users -> ", res);
