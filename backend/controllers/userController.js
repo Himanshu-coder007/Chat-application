@@ -2,6 +2,7 @@ import { User } from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+// ✅ User Registration
 export const register = async (req, res) => {
   try {
     const { fullName, username, password, confirmPassword, gender } = req.body;
@@ -42,6 +43,7 @@ export const register = async (req, res) => {
   }
 };
 
+// ✅ User Login
 export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -74,9 +76,10 @@ export const login = async (req, res) => {
         maxAge: 24 * 60 * 60 * 1000, // 1 day
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "None",
+        sameSite: "Lax", // 🔥 Fixed SameSite setting
       })
       .json({
+        message: "Login successful",
         _id: user._id,
         username: user.username,
         fullName: user.fullName,
@@ -88,6 +91,7 @@ export const login = async (req, res) => {
   }
 };
 
+// ✅ User Logout
 export const logout = (req, res) => {
   try {
     return res
@@ -95,7 +99,7 @@ export const logout = (req, res) => {
       .cookie("token", "", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "None",
+        sameSite: "Lax", // 🔥 Fixed SameSite setting
         expires: new Date(0),
       })
       .json({ message: "Logged out successfully." });
@@ -105,6 +109,28 @@ export const logout = (req, res) => {
   }
 };
 
+// ✅ Middleware: Verify Token & Extract User ID
+export const verifyToken = (req, res, next) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+      req.id = decoded.userId;
+      next();
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// ✅ Get Other Users (Exclude Logged-In User)
 export const getOtherUsers = async (req, res) => {
   try {
     if (!req.id) {
