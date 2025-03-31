@@ -10,9 +10,9 @@ const useGetOtherUsers = () => {
   useEffect(() => {
     const fetchOtherUsers = async () => {
       try {
-        axios.defaults.withCredentials = true;
+       
         const res = await axios.get(
-          `https://chat-application-6og6.onrender.com/api/v1/user/`
+          `https://chat-application-6og6.onrender.com/api/v1/user/`,{withCredentials:true}
         );
         // store
         console.log("other users -> ", res);
