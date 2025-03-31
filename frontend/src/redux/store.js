@@ -17,6 +17,16 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
+  // Solution 1: Blacklist the socket slice entirely
+  blacklist: ["socket"], // Add this line
+
+  // OR Solution 2: Use a custom serializer (more advanced)
+  // serialize: (data) => {
+  //   return JSON.stringify(data, (key, value) => {
+  //     if (key === 'socket') return undefined; // Skip socket
+  //     return value;
+  //   });
+  // },
 };
 
 const rootReducer = combineReducers({
@@ -33,7 +43,10 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        // Also ignore the socket field in state checks
+        ignoredPaths: ["socket"],
       },
     }),
 });
+
 export default store;
