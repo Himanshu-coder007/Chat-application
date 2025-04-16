@@ -1,6 +1,10 @@
 import Signup from "./components/Signup";
 import "./App.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import HomePage from "./components/Homepage";
 import Login from "./components/Login";
 import { useEffect, useState } from "react";
@@ -9,10 +13,13 @@ import io from "socket.io-client";
 import { setSocket } from "./redux/socketSlice";
 import { setOnlineUsers } from "./redux/userSlice";
 
-
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <Navigate to="/login" replace />,
+  },
+  {
+    path: "/home",
     element: <HomePage />,
   },
   {
